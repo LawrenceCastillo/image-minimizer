@@ -36,9 +36,18 @@ const upload = multer({
 // Sharp lib config to generate thumbnail
 app.post('/uploads', upload.single('image'), (req, res, next) => {
   try {
-    sharp(req.file.path).resize(null,200, {
+    sharp(req.file.path).resize(1680,null, {
       withoutEnlargement: true
-    }).toFile(
+    })
+    .extract({
+      width: 1680,
+      height: 640,
+      left: 0,
+      top: 0
+    })
+    .sharpen()
+    .toFormat('png')
+    .toFile(
       'uploads/' + 'thumbnails-' + req.file.originalname, (err, resizeImage) => {
         if (err) {
           console.log(err)
